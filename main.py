@@ -1,5 +1,5 @@
 from turtle import Screen, Turtle
-from hero import Hero
+from hero import Hero, JumpState
 from cactus import Cactus
 from scoreboard import Scoreboard
 from random import randint
@@ -47,11 +47,9 @@ def jump():
         return
 
     state = dino.get_jump_state(Y_MOVING_BASE)
-    if state == 0 or state == 1:  # inactive or ascending
+    if state == JumpState.WAIT_FOR_TRIGGER or state == JumpState.ASCENDING:
         dino.jump_ascend(Y_MOVING_BASE)
-    elif state == 4:  # returned to floor
-        dino.reinit_jump_state()
-    elif state == 5:  # wait one cycle
+    elif state == JumpState.RETURNED_TO_FLOOR:
         jump_triggered = False
     else:  # turning or descending
         dino.jump_descend(Y_MOVING_BASE)
@@ -87,7 +85,6 @@ def main():
     game_is_on = True
     while game_is_on:
         cactus.move()
-        screen.update()
 
         if bot_active:
             if dino.hero_turtle.distance(cactus.cactus) < 250.0:
